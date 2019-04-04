@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aop-demo>
+
+<bean id="bean1" class="com.lb.scala.base.aop">
+    <key>aaaa</key>
+    <value>ddddd</value>
+</bean>
+
+    <bean id="bean2">bean2</bean>
+
+    <hehe>hehe</hehe>
+
+    <jdbc type="mysql">
+
+
+    </jdbc>
+
+</aop-demo>
