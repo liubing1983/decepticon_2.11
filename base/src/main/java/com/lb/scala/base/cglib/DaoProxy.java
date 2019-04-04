@@ -23,6 +23,7 @@ public class DaoProxy implements MethodInterceptor {
     @Override
     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
 
+        // 注解中的属性
         String type = "";
 
         // 增强的方法名
@@ -34,14 +35,14 @@ public class DaoProxy implements MethodInterceptor {
         }
 
         // 判断是否存在前置增强  方式1
-        Annotation befoer = method.getAnnotation(MyJavaAnnotation.Befoer.class);
-        if(null != befoer){
+        if(method.isAnnotationPresent(MyJavaAnnotation.Befoer.class)){
             System.out.println("Before Method Invoke");
         }
 
 
+
         // 判断是否存在前置增强  方式2
-        if(null != method.getAnnotation(AopAnnotation.class) ){
+        if(method.isAnnotationPresent(AopAnnotation.class)){
             type = method.getAnnotation(AopAnnotation.class).type();
         }
 
@@ -55,8 +56,7 @@ public class DaoProxy implements MethodInterceptor {
 
 
         // 判断是否存在后置增强
-        Annotation after = method.getAnnotation(MyJavaAnnotation.After.class);
-        if(null != after){
+        if(method.isAnnotationPresent(MyJavaAnnotation.After.class)){
             System.out.println("After Method Invoke");
         }
 
