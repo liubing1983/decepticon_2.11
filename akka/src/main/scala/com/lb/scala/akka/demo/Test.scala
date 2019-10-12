@@ -69,7 +69,7 @@ object Test{
     val haha: Method = c.getDeclaredMethod(fun_name, Integer.TYPE, Integer.TYPE)
 
     val re = haha.invoke(c.newInstance(), a.asInstanceOf[Object], b.asInstanceOf[Object])
-   println(re)
+    println(re)
   }
 
   // 使用高阶函数调用算法

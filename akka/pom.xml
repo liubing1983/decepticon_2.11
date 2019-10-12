@@ -69,6 +69,53 @@
             <version>${akka-version}</version>
         </dependency>
 
+
+        <!--  akka  persistence  -->
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-persistence_2.11</artifactId>
+            <version>${akka-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fusesource.leveldbjni</groupId>
+            <artifactId>leveldbjni-all</artifactId>
+            <version>1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twitter</groupId>
+            <artifactId>chill-akka</artifactId>
+            <version>0.8.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.okumin/akka-persistence-sql-async -->
+        <dependency>
+            <groupId>com.okumin</groupId>
+            <artifactId>akka-persistence-sql-async_2.11</artifactId>
+            <version>0.5.1</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/com.github.mauricio/mysql-async -->
+        <dependency>
+            <groupId>com.github.mauricio</groupId>
+            <artifactId>mysql-async_2.11</artifactId>
+            <version>0.2.21</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.mauricio/postgresql-async -->
+        <dependency>
+            <groupId>com.github.mauricio</groupId>
+            <artifactId>postgresql-async_2.11</artifactId>
+            <version>0.2.21</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.scalikejdbc</groupId>
+            <artifactId>scalikejdbc-async_2.11</artifactId>
+            <version>0.9.0</version>
+        </dependency>
+
+
         <dependency>
             <groupId>com.nulab-inc</groupId>
             <artifactId>akka-http-oauth2-provider_2.11</artifactId>

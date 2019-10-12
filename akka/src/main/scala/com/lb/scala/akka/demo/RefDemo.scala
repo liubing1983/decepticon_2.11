@@ -9,7 +9,6 @@ import akka.routing.RoundRobinPool
 class ActorDemo extends  Actor with  ActorLogging {
 
 
-
   override def preStart(): Unit = super.preStart()
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = super.preRestart(reason, message)
   override def postStop(): Unit = super.postStop()
@@ -20,6 +19,8 @@ class ActorDemo extends  Actor with  ActorLogging {
     case i: Int => log.info(i+"")
     case s: String => log.info(s)
   }
+
+  // context.actorOf(Props[ActorDemo])
 
 
   // 接收未匹配的数据
