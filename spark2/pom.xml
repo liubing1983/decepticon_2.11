@@ -10,14 +10,16 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>spark2</artifactId>
 
-    <repositories>
-        <repository>
-            <id>cloudera</id>
-            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-spark-bundle</artifactId>
+            <version>0.5.1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>/Users/liubing/.m2/repository/org/apache/hudi/hudi-spark-bundle/0.5.1-SNAPSHOT/hudi-spark-bundle-0.5.1-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.11</artifactId>
@@ -97,6 +99,35 @@
             <groupId>org.apache.kudu</groupId>
             <artifactId>kudu-spark2_2.11</artifactId>
             <version>${kudu.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-core</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-mapreduce-client-common -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-common</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-mapreduce-client-app -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-app</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-mapreduce-client-hs -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-hs</artifactId>
+            <version>${hadoop.version}</version>
         </dependency>
     </dependencies>
 </project>

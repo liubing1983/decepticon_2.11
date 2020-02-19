@@ -20,14 +20,15 @@
         <module>chowderframe</module>
         <module>elk5</module>
         <module>elk6</module>
+        <module>parseyarnhistorylogavro</module>
+        <module>flink19</module>
     </modules>
-
 
     <repositories>
         <repository>
             <id>puhuifinance</id>
             <name>Maven of Puhuifinance.com</name>
-            <url>http://inside.puhuifinance.com/nexus/content/groups/public/</url>
+            <url>http://inside.finupgroup.com//nexus/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -35,6 +36,10 @@
                 <enabled>true</enabled>
             </snapshots>
             <layout>default</layout>
+        </repository>
+        <repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
         </repository>
     </repositories>
 
@@ -44,9 +49,11 @@
 
         <scala.version>2.11.12</scala.version>
         <flink.version>1.7.1</flink.version>
+        <flink19.version>1.9.1</flink19.version>
         <scala.binary.version>2.11</scala.binary.version>
         <scala.version>2.11.8</scala.version>
-        <hadoop.version>2.7.3</hadoop.version>
+        <!--<hadoop.version>2.7.3</hadoop.version> -->
+        <hadoop.version>2.6.0-cdh5.13.2</hadoop.version>
         <spark.version>2.3.0</spark.version>
         <kudu.version>1.6.0-cdh5.14.0</kudu.version>
         <scalatest.version>2.2.0</scalatest.version>
