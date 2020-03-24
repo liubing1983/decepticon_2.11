@@ -9,7 +9,7 @@ import org.apache.flink.util.Collector
 
 /**
   * @ClassName MapValueStateDemo
-  * @Description @TODO
+  * @Description @TODO 状态的基础应用
   * @Author liubing
   * @Date 2020/1/16 14:48
   * @Version 1.0
@@ -54,10 +54,9 @@ object MapValueStateDemo extends App {
             mapState.put(in._1, in._2)
             in._2
           } else {
-            if (mapState.get(in._1) < in._2){
+            if (mapState.get(in._1) < in._2) {
               mapState.get(in._1)
-            }
-            else {
+            } else {
               mapState.put(in._1, in._2)
               in._2
             }

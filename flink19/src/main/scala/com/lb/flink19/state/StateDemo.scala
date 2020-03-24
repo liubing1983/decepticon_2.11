@@ -22,11 +22,7 @@ object StateDemo  extends  App{
 
   import org.apache.flink.api.scala._
 
-  ds .map { x =>
-    val v = x.split(",", -1)
-    (v(0), v(1).toLong)
-  }.keyBy(_._1)
-    .flatMap{
+  ds .map { x => (x.split(",", -1)(0), x.split(",", -1)(1).toLong) }.keyBy(_._1) .flatMap{
     new RichFlatMapFunction[(String, Long), (String, Long, Long)] {
 
       private var s : ValueState[Long] = null
