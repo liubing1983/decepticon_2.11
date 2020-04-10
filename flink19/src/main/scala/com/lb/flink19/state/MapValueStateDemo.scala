@@ -31,14 +31,22 @@ object MapValueStateDemo extends App {
 
         private var mapState: MapState[String, Long] = null
 
+        // 从state中取值
         override def open(parameters: Configuration): Unit = {
 
-          // 配置状态生命周期
+          // 配置state生命周期
           val stateTtlConfig = StateTtlConfig
-            .newBuilder(Time.seconds(10))
-            .setUpdateType(StateTtlConfig.UpdateType.OnCreateAndWrite)
+            .newBuilder(Time.seconds(10))  // 过期时间
+            .setUpdateType(StateTtlConfig.UpdateType.OnCreateAndWrite)  // 更新策略
             .setStateVisibility(StateTtlConfig.StateVisibility.NeverReturnExpired)
             .build()
+
+          // StateTtlConfig 可配置参数
+          // UpdateType、StateVisibility、Time、CleanupStrategies  TtlTimeCharacteristic
+
+          // UpdateType(Disabled、OnCreateAndWrite、OnReadAndWrite)
+          // StateVisibility(ReturnExpiredIfNotCleanedUp、NeverReturnExpired)
+          // TtlTimeCharacteristic(ProcessingTime)
 
           val mapValueState = new MapStateDescriptor[String, Long]("", classOf[String], classOf[Long])
 
@@ -48,19 +56,21 @@ object MapValueStateDemo extends App {
           mapState = getRuntimeContext.getMapState(mapValueState)
         }
 
+        /**
+          *
+          * @param in : key, 当前值
+          * @param collector : key, 当前值, 最小值
+          */
         override def flatMap(in: (String, Long), collector: Collector[(String, Long, Long)]): Unit = {
           // 判断当前key在状态缓存中是否存在
           val tmpValue = if (!mapState.contains(in._1)) {
             mapState.put(in._1, in._2)
             in._2
-          } else {
-            if (mapState.get(in._1) < in._2) {
-              mapState.get(in._1)
-            } else {
-              mapState.put(in._1, in._2)
-              in._2
-            }
+          } else { // 判断当前是否是最小值
+            if (mapState.get(in._1) < in._2) { mapState.get(in._1)
+            } else { mapState.put(in._1, in._2); in._2  }
           }
+          // 返回: key, 当前值, 最小值
           collector.collect(in._1, in._2, tmpValue)
         }
       }
@@ -68,6 +78,3 @@ object MapValueStateDemo extends App {
 
   env.execute()
 }
-
-
-

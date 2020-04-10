@@ -32,7 +32,8 @@ object AggregateFunctionExample extends App {
   val ds: DataStream[String] = env.socketTextStream("127.0.0.1", 9000)
 
 
-  ds.map(Tuple1[String](_))  // partitionCustom 必须使用Tuples, POJOs, case classes, etc格式, 否则报错: This key operation requires a composite type such as Tuples, POJOs, case classes, etc
+  ds
+    .map(Tuple1[String](_))  // partitionCustom 必须使用Tuples, POJOs, case classes, etc格式, 否则报错: This key operation requires a composite type such as Tuples, POJOs, case classes, etc
     .partitionCustom(new CustomPartitioner, 0)  // (分区函数, key取值下标)
     .map { x =>
       println(x._1)

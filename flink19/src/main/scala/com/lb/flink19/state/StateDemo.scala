@@ -22,7 +22,8 @@ object StateDemo  extends  App{
 
   import org.apache.flink.api.scala._
 
-  ds .map { x => (x.split(",", -1)(0), x.split(",", -1)(1).toLong) }.keyBy(_._1) .flatMap{
+  ds .map { x => (x.split(",", -1)(0), x.split(",", -1)(1).toLong) }.keyBy(_._1)
+    .flatMap(
     new RichFlatMapFunction[(String, Long), (String, Long, Long)] {
 
       private var s : ValueState[Long] = null
@@ -39,7 +40,7 @@ object StateDemo  extends  App{
         val valueState = new ValueStateDescriptor[Long]("abc", classOf[Long])
 
         // 指定生命周期配置
-        // valueState.enableTimeToLive(stateTtlConfig)
+        valueState.enableTimeToLive(stateTtlConfig)
 
         s = getRuntimeContext.getState(valueState)
 
@@ -50,18 +51,15 @@ object StateDemo  extends  App{
 
         if(leastV == null) println("123")
 
-        println(leastV+"==============")
         if(in._2 > leastV || null == leastV)
           collector.collect(in._1, in._2, leastV)
         else {
           s.update(in._2)
           collector.collect(in._1, in._2, in._2)
         }
-
       }
     }
-  }.print()
-
+    ).print()
 
 env.execute()
 }

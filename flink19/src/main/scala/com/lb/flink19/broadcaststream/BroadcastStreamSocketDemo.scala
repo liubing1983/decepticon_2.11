@@ -1,7 +1,7 @@
 package com.lb.flink19.broadcaststream
 
+import com.lb.flink19.broadcaststream.BroadcastStreamSocketDemo.log
 import org.apache.flink.api.common.state.MapStateDescriptor
-import org.apache.flink.api.common.typeinfo.BasicTypeInfo
 import org.apache.flink.api.scala._
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.datastream.BroadcastStream
@@ -45,42 +45,45 @@ object BroadcastStreamSocketDemo  extends  App{
 
  //  dataStream.flatMap(_.split(" ")).map((_, 1)).keyBy(0).timeWindow(Time.seconds(5), Time.seconds(1)).sum(1).print
 
-
-
   //广播流合主流的整合
   dataStream
     .flatMap(_.split(" ")).map((_, 1)).keyBy(0)  // 计算关键字出现的次数
     .timeWindow(Time.seconds(5), Time.seconds(1)).sum(1)
-    .connect(broadcastStream).process(new BroadcastProcessFunction[(String, Int), MonitorStream, String] {
-
-    private var map = new mutable.HashMap[String, Int ]
-
-    override def open(parameters: Configuration): Unit = {
-
-      super.open(parameters)
-    }
-
-    override def processElement(value: (String, Int), ctx: BroadcastProcessFunction[(String, Int), MonitorStream, String]#ReadOnlyContext, out: Collector[String]): Unit = {
-
-      log.debug(s"111111111: ${value._1}-${value._2}, 当前规则数量: ${map.size}.")
-
-      // 判断当前数据是否需要监控
-      map.get(value._1) match {
-        case None => None
-        case _ => if(value._2 > map.get(value._1).get) println(s" ${value._1} 大于监控值. 当前值${value._2}, 阈值${map.get(value._1).get} ")
-      }
-
-    }
-
-    // 通过广播变量处理新增的监控规则
-    override def processBroadcastElement(value: MonitorStream, ctx: BroadcastProcessFunction[(String, Int), MonitorStream, String]#Context, out: Collector[String]): Unit = {
-      map.put(value.k, value.v)
-      log.info(s"新增监控规则: ${value.k}-${value.v}, 当前规则数量: ${map.size}.")
-      log.info(s"当前规则数量: ${map.mkString(" ;")}.")
-    }
-  }).print
+    .connect(broadcastStream)
+    .process(new MyBroadcastProcessFunction)
+    .print
 
   env.execute("Flink BroadcastStreamSocketDemo ")
 
 
+}
+
+class  MyBroadcastProcessFunction extends BroadcastProcessFunction[(String, Int), MonitorStream, String] {
+
+  private val map = new mutable.HashMap[String, Int ]
+
+  override def open(parameters: Configuration): Unit = {
+    super.open(parameters)
+  }
+
+  // 处理主流
+  override def processElement(value: (String, Int), ctx: BroadcastProcessFunction[(String, Int), MonitorStream, String]#ReadOnlyContext, out: Collector[String]): Unit = {
+
+    log.debug(s"111111111: ${value._1}-${value._2}, 当前规则数量: ${map.size}.")
+
+    // 判断当前数据是否需要监控
+    map.get(value._1) match {
+      case None => None
+      case _ => if(value._2 > map.get(value._1).get) println(s" ${value._1} 大于监控值. 当前值${value._2}, 阈值${map.get(value._1).get} ")
+    }
+
+  }
+
+  // 通过广播变量处理新增的监控规则
+  // 处理广播流
+  override def processBroadcastElement(value: MonitorStream, ctx: BroadcastProcessFunction[(String, Int), MonitorStream, String]#Context, out: Collector[String]): Unit = {
+    map.put(value.k, value.v)
+    log.info(s"新增监控规则: ${value.k}-${value.v}, 当前规则数量: ${map.size}.")
+    log.info(s"当前规则数量: ${map.mkString(" ;")}.")
+  }
 }
