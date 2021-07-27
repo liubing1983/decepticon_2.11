@@ -1,18 +1,23 @@
 package com.lb.scala.spark2.hudi
 
-import com.lb.scala.spark2.hudi.HudiHw.{Record, ss}
-import org.apache.hudi.DataSourceWriteOptions.{PRECOMBINE_FIELD_OPT_KEY, RECORDKEY_FIELD_OPT_KEY}
-import org.apache.hudi.QuickstartUtils.getQuickstartWriteConfigs
-import org.apache.hudi.config.HoodieWriteConfig.TABLE_NAME
-import org.apache.kafka.common.serialization.StringDeserializer
+import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.serializer.SerializeConfig
+import com.lb.scala.spark2.hudi.Jdbc2Hudi.sparkConf
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.SaveMode.Overwrite
-import org.apache.spark.streaming.{Duration, Seconds, StreamingContext}
+import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.streaming.kafka010.KafkaUtils
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
+import org.apache.hudi.QuickstartUtils._
+import org.apache.hudi.DataSourceWriteOptions._
+import org.apache.hudi.config.HoodieWriteConfig._
+
+import scala.collection.JavaConversions.mapAsJavaMap
 
 /**
+  * 从kafka读取数据, 写入hudi
+  *
   * @ClassName Kafka2Hudi
   * @Description @TODO
   * @Author liubing
@@ -23,65 +28,60 @@ object Kafka2Hudi {
 
   def main(args: Array[String]): Unit = {
 
+    val conf = new SparkConf()
+      // .setMaster("yarn")
+      .setMaster("local[*]")
+      .setAppName("Kafka2Hudi")
+      .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
 
-
-    val conf = new SparkConf().setMaster("local[2]").setAppName("NetworkWordCount")
     val ssc = new StreamingContext(conf, Seconds(10))
+    val ss = SparkSession.builder().config(sparkConf).config("spark.serializer", "org.apache.spark.serializer.KryoSerializer").getOrCreate()
 
-    val kafkaParams = Map[String, Object](
+
+    // hudi配置
+    val tbname = "finup_ecology.test_lb"
+    val hdfs_basePath = "/user/liubing/hudi/test_lb"
+
+    // kafka配置
+    val kafkaParams = Map[String, String](
       "bootstrap.servers" -> "localhost:9092",
       "zookeeper.connect" -> "127.0.0.1:2181",
-      //"key.deserializer" -> "org.apache.kafka.common.serialization.StringDeserializer",
-      "key.deserializer" -> classOf[StringDeserializer].getCanonicalName,
-      //"value.deserializer" -> "org.apache.kafka.common.serialization.StringDeserializer",
-      "value.deserializer" -> classOf[StringDeserializer].getCanonicalName,
+      "key.deserializer" -> "org.apache.kafka.common.serialization.StringDeserializer",
+      "value.deserializer" -> "org.apache.kafka.common.serialization.StringDeserializer",
       "group.id" -> "1234",
       "auto.offset.reset" -> "latest",
       "enable.auto.commit" -> "false"
     )
 
-    //properties.put("bootstrap.servers", "127.0.0.1:9092")
-    //properties.put("zookeeper.connect", "127.0.0.1:2181")
-    //properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
-    // properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
-    //properties.put("group.id", "test6")
+    // 从kafka读取数据,  数据格式[1,2,3]
+    val stream = KafkaUtils.createDirectStream[String, String](ssc, PreferConsistent, Subscribe[String, String](Array("hudi"), kafkaParams))
 
-    val topics = Array("lb")
-    val stream = KafkaUtils.createDirectStream[String, String](
-      ssc, PreferConsistent, Subscribe[String, String](topics, kafkaParams))
 
-    stream.foreachRDD{rdd =>
-      val data = rdd.map{ x => x.value().toString.split(",").map(x => (x(0), x(1), x(2), x(3), x(4)))}
-      data.write
+    // 解析数据
+    //    val data = stream.map { x =>
+    //      val v = x.value().split(",")
+    //      JSON.toJSONString(mapAsJavaMap(Map("name" -> v(0), "age" -> v(1), "sex" -> v(2))), new SerializeConfig(true))
+    //    }
+
+    val data = stream.map(_.value().split(",", -1)).filter(_.length == 3).map { v =>
+      JSON.toJSONString(mapAsJavaMap(Map("name" -> v(0), "age" -> v(1), "sex" -> v(2))), new SerializeConfig(true))
     }
 
-    stream.map{record =>
-      record.value().toString.split(",").map(x => (x(0), x(1), x(2), x(3), x(4)))
+    data.foreachRDD { x =>
+      val df = ss.read.option("timestampFormat", "yyyy-MM-dd HH:mm:ss").json(x)
 
+      // 写入hudi
+      df.write.format("org.apache.hudi")
+        .options(getQuickstartWriteConfigs)
+        .option(RECORDKEY_FIELD_OPT_KEY, "name") // 记录唯一的id
+        .option(PRECOMBINE_FIELD_OPT_KEY, "age") // 在数据合并的时候使用到
+        .option(PARTITIONPATH_FIELD_OPT_KEY, "partitionpath") // 分区字段
+        .option(TABLE_NAME, tbname)
+        .mode(SaveMode.Append)
+        .save(hdfs_basePath)
+    }
 
-    .write.format("org.apache.hudi")
-      .options(getQuickstartWriteConfigs)
-      .option(PRECOMBINE_FIELD_OPT_KEY, "id")
-      .option(RECORDKEY_FIELD_OPT_KEY, "name")
-      .option(TABLE_NAME, tableName)
-      .mode(Overwrite)
-      .save(basePath)
-
-    val toViewDF = ss.sqlContext.read.format("org.apache.hudi").load(basePath + "/*/*")
-
-    toViewDF.show
-
-    toViewDF.createOrReplaceTempView("huditb")
-
-    ss.sql("select * from huditb ").show
-
-
-
-
-    ssc.start()             // Start the computation
+    ssc.start() // Start the computation
     ssc.awaitTermination()
-
   }
-
-
 }

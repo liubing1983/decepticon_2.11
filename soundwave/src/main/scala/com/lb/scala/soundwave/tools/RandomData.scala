@@ -1,6 +1,14 @@
 package com.lb.scala.soundwave.tools
 
+import com.lb.scala.soundwave.tools.RandomData.chineseCharacters
+
 import scala.util.Random
+
+class RandomData(){
+
+
+
+}
 
 /**
   * @ClassName RandomData
@@ -68,7 +76,7 @@ object RandomData {
 
   def main(args: Array[String]): Unit = {
     // println(getRandomChineseCharacters(20))
-    //println(getRandomEngilshCharacters(1000))
+    // println(getRandomEngilshCharacters(1000))
   }
 
 

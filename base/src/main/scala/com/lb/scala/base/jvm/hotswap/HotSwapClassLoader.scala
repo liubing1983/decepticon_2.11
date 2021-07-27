@@ -14,7 +14,7 @@ class HotSwapClassLoader extends ClassLoader{
 //
 //  }
 
-  def loadByte(classByte: Array[Byte]): Class ={
-    defineClass(null, classByte, 0, classByte.length)
-  }
+//  def loadByte(classByte: Array[Byte]): Class ={
+//    defineClass(null, classByte, 0, classByte.length)
+//  }
 }

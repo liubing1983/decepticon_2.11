@@ -15,7 +15,7 @@ public class TestDao {
         enhancer.setCallback(daoProxy);   // 回调函数
 
         Dao dao = (Dao)enhancer.create();
-        dao.update("before");
-        dao.select();
+        dao.update("before", 10);
+        // dao.select();
     }
 }

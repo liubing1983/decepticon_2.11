@@ -10,7 +10,7 @@ public class Dao {
 
     @MyJavaAnnotation.After
     @MyJavaAnnotation.Befoer
-    public void update(String s){
+    public void update(String s, int i){
         System.out.println("dao.update");
     }
 

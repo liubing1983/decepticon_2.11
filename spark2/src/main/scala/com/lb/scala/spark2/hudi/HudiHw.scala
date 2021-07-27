@@ -10,8 +10,6 @@ import org.apache.hudi.DataSourceReadOptions._
 import org.apache.hudi.DataSourceWriteOptions._
 import org.apache.hudi.config.HoodieWriteConfig._
 
-
-
 /**
   * @ClassName HudiHw
   * @Description @TODO
@@ -31,7 +29,6 @@ object HudiHw {
 
   val ss = SparkSession.builder().config(sparkConf).getOrCreate()
 
-
   def main(args: Array[String]): Unit = {
 
     val tableName = "hudi_cow_table"
@@ -39,9 +36,8 @@ object HudiHw {
     val basePath = "/Users/liubing/demo/hudi/hudi_cow_table"
 
     import ss.implicits._
-    val featureDF = ss.sqlContext.read.textFile("/Users/liubing/demo/test.txt")
+    val featureDF = ss.sqlContext.read.textFile("file:////Users/liubing/demo/test.txt")
         .map(_.split(",")).map(x=>Record(x(0), x(1), x(2), x(3), x(4))).toDF
-
 
     featureDF.write.format("org.apache.hudi")
       .options(getQuickstartWriteConfigs)
@@ -71,5 +67,4 @@ object HudiHw {
       */
 
   }
-
 }

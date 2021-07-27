@@ -28,7 +28,6 @@ class SupervisorDemo extends  Actor with  ActorLogging{
   override def unhandled(message: Any): Unit = {
       log.info(s"info: $message")
       log.debug(s"debug: $message")
-
   }
 
   /**

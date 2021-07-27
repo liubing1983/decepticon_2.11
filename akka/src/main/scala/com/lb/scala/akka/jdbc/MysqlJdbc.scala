@@ -6,11 +6,11 @@ import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
 import akka.routing.RoundRobinPool
 
 
-class MysqlConn{
+class MysqlConn {
 
   //初始化驱动类com.mysql.jdbc.Driver
   Class.forName("com.mysql.jdbc.Driver")
-   val conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/lb?characterEncoding=UTF-8","root", "123456")
+  val conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/lb?characterEncoding=UTF-8", "root", "123456")
 
   def getConnection(): Connection = {
     conn
@@ -25,7 +25,7 @@ class MysqlConn{
   * @Date 2019/9/3 11:59
   * @Version 1.0
   **/
-class MysqlJdbc  extends  Actor with ActorLogging{
+class MysqlJdbc extends Actor with ActorLogging {
 
   var conn: Connection = null
 
@@ -33,11 +33,11 @@ class MysqlJdbc  extends  Actor with ActorLogging{
   override def preStart(): Unit = {
     // 创建actor时, 初始化 mysql  connection
 
-      //初始化驱动类com.mysql.jdbc.Driver
-//      Class.forName("com.mysql.jdbc.Driver")
-//    if(conn == null){
-//      conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/lb?characterEncoding=UTF-8","root", "123456")
-//    }
+    //初始化驱动类com.mysql.jdbc.Driver
+    //      Class.forName("com.mysql.jdbc.Driver")
+    //    if(conn == null){
+    //      conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/lb?characterEncoding=UTF-8","root", "123456")
+    //    }
 
     // 单例, 所有线程使用一个连接
     conn = MysqlJdbc.mysqlinit.getConnection()
@@ -47,7 +47,7 @@ class MysqlJdbc  extends  Actor with ActorLogging{
 
   override def postStop(): Unit = {
     // 关闭连接
-    if(conn != null) conn.close()
+    if (conn != null) conn.close()
     super.postStop()
   }
 
@@ -59,11 +59,12 @@ class MysqlJdbc  extends  Actor with ActorLogging{
 }
 
 
-object  MysqlJdbc{
+object MysqlJdbc {
 
   val sys = ActorSystem.create("MysqlJdbc_system")
-  val ref  = sys.actorOf(Props[MysqlJdbc].withRouter(new RoundRobinPool(100)), "MysqlJdbc_actorRef")
-  val mysqlinit  = new MysqlConn
+  val ref = sys.actorOf(Props[MysqlJdbc].withRouter(new RoundRobinPool(100)), "MysqlJdbc_actorRef")
+  val mysqlinit = new MysqlConn
+
   def main(args: Array[String]): Unit = {
     ref ! "insert"
 

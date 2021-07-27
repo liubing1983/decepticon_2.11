@@ -48,9 +48,9 @@ object RandomTestDataProducer extends App {
   val arr: Array[String] = Array[String]("apple", "华为", "锤子", "oppo", "三星", "魅族", "摩托罗拉", "诺基亚", "HTC", "小米")
 
 
-  for (i <- 0 until  100000) {
+  for (i <- 0 until  1000000000) {
 
-    val localDateTime =  LocalDateTime.now();
+    val localDateTime =  LocalDateTime.now()
     val bean = new RandomTestDataBean(
       arr(Random.nextInt(10)),
       System.currentTimeMillis(),
@@ -66,7 +66,7 @@ object RandomTestDataProducer extends App {
     // println(json_data)
     // producer.send(new ProducerRecord[String, String]("flink-RandomTestData-topic", Integer.toString(i + 1), json_data.toString))
     producer.send(new ProducerRecord[String, String]("test2", Integer.toString(i + 1), json_data.toString))
-    Thread.sleep(1)
+    Thread.sleep(5)
   }
   producer.close()
 }

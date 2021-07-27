@@ -4,11 +4,15 @@ import com.lb.scala.base.annotation.AopAnnotation;
 import com.lb.scala.base.annotation.MyJavaAnnotation;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 public class DaoProxy implements MethodInterceptor {
+
+    Logger log =  LoggerFactory.getLogger(DaoProxy.class);
 
 
     /**
@@ -27,27 +31,37 @@ public class DaoProxy implements MethodInterceptor {
         String type = "";
 
         // 增强的方法名
-        System.out.println( method.getName()+"-----------");
+        log.info("需增强的方法名: "+ method.getName());
+        log.info(method.getParameterCount()+"");
+        for(int i = 0; i<method.getParameterCount() ; i++){
+            log.info("遍历参数: "+ i);
+            log.info(method.getParameterTypes()[i]+"");
+            log.info(objects[i]+"");
+
+        }
 
         // 遍历打印所有注解
+        log.info("遍历所有的注解");
         for(Annotation ann : method.getAnnotations()){
-            System.out.println(ann.toString());
+            log.info(ann.toString());
         }
+        log.info("遍历所有的注解结束!!");
 
         // 判断是否存在前置增强  方式1
         if(method.isAnnotationPresent(MyJavaAnnotation.Befoer.class)){
-            System.out.println("Before Method Invoke");
+            log.info("存在前置增强, Before Method Invoke!!");
         }
 
 
 
         // 判断是否存在前置增强  方式2
         if(method.isAnnotationPresent(AopAnnotation.class)){
+            log.info("判断是否存在前置增强  方式2");
             type = method.getAnnotation(AopAnnotation.class).type();
         }
 
         if( type.equals("befoer") || type.equals("all")){
-            System.out.println("判断是否存在前置增强  方式2");
+            log.info("存在前置增强  方式2");
         }
 
 
@@ -57,15 +71,16 @@ public class DaoProxy implements MethodInterceptor {
 
         // 判断是否存在后置增强
         if(method.isAnnotationPresent(MyJavaAnnotation.After.class)){
-            System.out.println("After Method Invoke");
+            log.info("存在后置增强, After Method Invoke");
         }
 
 
         // 判断是否存在后置增强  方式2
         if( type.equals("after") || type.equals("all")){
-            System.out.println("判断是否存在前置增强  方式2");
+            log.info("后置增强  方式2");
         }
 
+        log.info(method.getName()+"增强结束  \n\n"  );
         return o;
     }
 }

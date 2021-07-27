@@ -11,16 +11,6 @@
 
     <artifactId>akka</artifactId>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java-version>1.8</java-version>
-        <log4j-version>1.2.15</log4j-version>
-        <akka-version>2.5.14</akka-version>
-        <akka-http-version>10.1.3</akka-http-version>
-        <scala.version>2.11.12</scala.version>
-    </properties>
-
-
     <dependencies>
         <!-- Akka Actors -->
         <dependency>
@@ -83,7 +73,7 @@
         </dependency>
         <dependency>
             <groupId>com.twitter</groupId>
-            <artifactId>chill-akka</artifactId>
+            <artifactId>chill_2.11</artifactId>
             <version>0.8.0</version>
         </dependency>
 

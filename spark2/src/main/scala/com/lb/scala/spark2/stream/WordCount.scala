@@ -9,11 +9,15 @@ object WordCount {
 
   def main(args: Array[String]): Unit = {
 
+    println("=========================================")
+
     val WINDOW_LENGTH = new Duration(20 * 1000)
     val SLIDE_INTERVAL = new Duration(10 * 1000)
 
 
-    val conf = new SparkConf().setMaster("local[2]").setAppName("NetworkWordCount")
+    val conf = new SparkConf()
+      //.setMaster("local[2]")
+      .setAppName("NetworkWordCount")
     val ssc = new StreamingContext(conf, Seconds(1))
 
     val lines = ssc.socketTextStream("localhost", 9999)

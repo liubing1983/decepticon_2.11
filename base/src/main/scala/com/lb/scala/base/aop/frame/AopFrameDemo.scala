@@ -18,11 +18,11 @@ object AopFrameDemo {
 
 
   def newInstance(className: String) : Any ={
-    var cla : Class[_] = null;
-    var  obj : Any = null;
+    var cla : Class[_] = null
+    var  obj : Any = null
     try {
-      cla = Class.forName(className);
-      obj = cla.newInstance();
+      cla = Class.forName(className)
+      obj = cla.newInstance()
     } catch {
       case e:ClassNotFoundException => e.printStackTrace()
       case e:InstantiationException => e.printStackTrace()

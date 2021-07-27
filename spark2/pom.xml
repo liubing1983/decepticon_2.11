@@ -11,29 +11,37 @@
     <artifactId>spark2</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.hudi</groupId>
-            <artifactId>hudi-spark-bundle</artifactId>
-            <version>0.5.1-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>/Users/liubing/.m2/repository/org/apache/hudi/hudi-spark-bundle/0.5.1-SNAPSHOT/hudi-spark-bundle-0.5.1-SNAPSHOT.jar</systemPath>
-        </dependency>
-
+        <!-- <dependency>
+             <groupId>org.apache.hudi</groupId>
+             <artifactId>hudi-spark-bundle</artifactId>
+             <version>0.5.1-SNAPSHOT</version>
+             <scope>system</scope>
+             <systemPath>/Users/liubing/.m2/repository/org/apache/hudi/hudi-spark-bundle/0.5.1-SNAPSHOT/hudi-spark-bundle-0.5.1-SNAPSHOT.jar</systemPath>
+         </dependency> -->
 
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.11</artifactId>
             <version>${spark.version}</version>
+
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-sql_2.11</artifactId>
             <version>${spark.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-avro_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
-            <version>${hadoop.version}</version>
+            <version>${cloudera.hadoop.version}</version>
+
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-assembly
@@ -70,11 +78,29 @@
             <version>${es.version}</version>
         </dependency>-->
 
-        <!-- https://mvnrepository.com/artifact/org.elasticsearch/elasticsearch-hadoop -->
+        <!-- https://mvnrepository.com/artifact/org.elasticsearch/elasticsearch-hadoop-->
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch-hadoop</artifactId>
             <version>${es.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.aggregate</groupId>
+                    <artifactId>jetty-all</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.pig</groupId>
+                    <artifactId>pig</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.spark</groupId>
+                    <artifactId>spark-core_2.10</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.kudu/kudu-client -->
@@ -104,30 +130,98 @@
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-mapreduce-client-core</artifactId>
-            <version>${hadoop.version}</version>
+            <version>${cloudera.hadoop.version}</version>
+
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
-            <version>${hadoop.version}</version>
+            <version>${cloudera.hadoop.version}</version>
+
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-mapreduce-client-common -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-mapreduce-client-common</artifactId>
-            <version>${hadoop.version}</version>
+            <version>${cloudera.hadoop.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-mapreduce-client-app -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-mapreduce-client-app</artifactId>
-            <version>${hadoop.version}</version>
+            <version>${cloudera.hadoop.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-mapreduce-client-hs -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-mapreduce-client-hs</artifactId>
-            <version>${hadoop.version}</version>
+            <version>${cloudera.hadoop.version}</version>
         </dependency>
+
+        <!-- hoodie -->
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-common</artifactId>
+            <version>${hudi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-hadoop-mr</artifactId>
+            <version>${hudi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-timeline-service</artifactId>
+            <version>${hudi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-spark_2.11</artifactId>
+            <version>${hudi.version}</version>
+
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-hive</artifactId>
+            <version>${hudi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-client</artifactId>
+            <version>${hudi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-utilities_2.11</artifactId>
+            <version>${hudi.version}</version>
+        </dependency>
+
+        <!-- Parquet -->
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-hadoop</artifactId>
+            <version>${parquet.version}</version>
+        </dependency>
+
+        <!-- Avro
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>${avro.version}</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-avro</artifactId>
+            <version>${parquet.version}</version>
+        </dependency>
+
     </dependencies>
+
 </project>
