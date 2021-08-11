@@ -15,15 +15,16 @@ import com.alibaba.druid.pool.DruidDataSourceFactory
   **/
 class MysqlDruidJdbc(pro: Properties) {
 
-  val dataSource: DataSource = DruidDataSourceFactory.createDataSource(pro)
-  val dao  = dataSource.getConnection
 
-  def getConnection(): Connection = {
-    dao
+
+  def getConnection(): Option[Connection] = {
+    val dataSource: DataSource = DruidDataSourceFactory.createDataSource(pro)
+    val ds  = dataSource.getConnection
+    Some(ds)
   }
 
-  def closeDataSource(): Unit = {
-    dao.close()
+  def closeDataSource(ds : Connection): Unit = {
+    ds.close()
   }
 
 }

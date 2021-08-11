@@ -21,6 +21,44 @@
         <scala.version>2.11.8</scala.version>
     </properties>
 
+
+
+    <!-- 多环境构建配置 -->
+    <profiles>
+        <!-- 开发环境配置 -->
+        <profile>
+            <!-- 标识符, 可以通过 -P[id] 来激活 --> <!-- -Pdev -->
+            <id>dev</id>
+            <properties>
+                <environment>dev</environment>
+            </properties>
+            <!-- 激活条件 -->
+            <activation>
+                <!-- 可以通过 -D[name]=[value] 来激活 --> <!-- -Denv=dev -->
+                <property>
+                    <name>env</name>
+                    <value>dev</value>
+                </property>
+                <!-- 默认激活 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <!--测试-->
+        <profile>
+            <id>test</id>
+            <properties>
+                <environment>test</environment>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <environment>prod</environment>
+            </properties>
+        </profile>
+    </profiles>
+
+
     <dependencies>
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -30,7 +68,24 @@
     </dependencies>
 
     <build>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources/resources-${environment}</directory>
+                <filtering>true</filtering>
+                <excludes/>
+            </resource>
+        </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+                <version>2.7</version>
+            </plugin>
+
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
