@@ -24,6 +24,7 @@
         <module>soundwave</module>
         <module>devastator</module>
         <module>mixture</module>
+        <module>flink114</module>
     </modules>
 
     <properties>
@@ -37,6 +38,7 @@
         <cloudera.hadoop.version>2.6.0-cdh5.13.2</cloudera.hadoop.version>
         <flink.version>1.7.1</flink.version>
         <flink19.version>1.9.1</flink19.version>
+        <flink114.version>1.14.0</flink114.version>
         <spark.version>2.4.0</spark.version>
 
         <kudu.version>1.6.0-cdh5.14.0</kudu.version>
@@ -186,8 +188,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java-version}</source>
+                    <target>${java-version}</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
