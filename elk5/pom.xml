@@ -18,7 +18,7 @@
         <akka-version>2.5.14</akka-version>
         <akka-http-version>10.1.3</akka-http-version>
         <scala.version>2.11.12</scala.version>
-        <es-server>5.3.3</es-server>
+        <es-server>6.8.17</es-server>
 
         <httpcore.version>4.4.6</httpcore.version>
         <httpclient.version>4.5.3</httpclient.version>
